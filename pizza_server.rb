@@ -33,7 +33,7 @@ class Server
   def start
     loop do
       conn = accept
-      serve(conn)
+      Thread.new { serve(conn) }
     end
   ensure
     @server.close
