@@ -1,13 +1,13 @@
 class Sempaphore
   def initialize(spots)
-    @spots = spots
     @mutex = Mutex.new
+    @spots = 
   end
 
-  def acquire
+  def acquire(thread_id)
   end
 
-  def release
+  def release(thread_id)
   end
 end
 
