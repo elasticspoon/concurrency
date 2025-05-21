@@ -30,7 +30,6 @@ class EventLoop
   end
 
   def run_coroutine(task)
-    binding.irb
     future = task.call
     future.fiber = task
 
