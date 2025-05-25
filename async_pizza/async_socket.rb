@@ -17,7 +17,7 @@ class AsyncSocket
       loop.register_reader(socket, task, future)
     end
 
-    future.coroutine = handle_yield
+    future.callback = handle_yield
     future
   end
 
@@ -31,7 +31,7 @@ class AsyncSocket
       loop.register_writer(socket, task, future)
     end
 
-    future.coroutine = handle_yield
+    future.callback = handle_yield
     future
   end
 
@@ -45,7 +45,7 @@ class AsyncSocket
       loop.register_reader(socket, task, future)
     end
 
-    future.coroutine = handle_yield
+    future.callback = handle_yield
     future
   end
 
@@ -56,7 +56,7 @@ class AsyncSocket
       socket.close
     end
 
-    future.coroutine = handle_yield
+    future.callback = handle_yield
     future
   end
 

@@ -24,7 +24,7 @@ class Server
     Fiber.new do
       loop do
         socket, = Fiber.yield(@socket.accept)
-        event_loop.add_task(serve(AsyncSocket.new(socket)))
+        event_loop.add_unready(serve(AsyncSocket.new(socket)))
       end
     end
   end
@@ -50,7 +50,7 @@ Signal.trap('INT') do
 end
 
 begin
-  event_loop.add_task(server.start)
+  event_loop.add_unready(server.start)
   event_loop.loop
 ensure
   puts server&.server_socket&.close

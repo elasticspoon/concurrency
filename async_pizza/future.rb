@@ -1,20 +1,15 @@
 class Future
-  attr_accessor :done, :coroutine
+  attr_accessor :done, :callback
   attr_reader :result
 
   def initialize
     @done = false
-    @coroutine = nil
+    @callback = nil
     @result = nil
   end
 
   def result=(result)
     @result = result
     @done = true
-  end
-
-  def resume
-    self.result = coroutine.resume
-    result
   end
 end

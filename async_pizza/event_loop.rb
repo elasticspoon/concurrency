@@ -1,58 +1,58 @@
 class EventLoop
-  attr_accessor :readers, :writers, :num_tasks, :ready
+  attr_accessor :readers, :writers, :unready, :queue
 
   def initialize
-    @num_tasks = 0
+    @unready = 0
     @readers = {}
     @writers = {}
-    @ready = Queue.new
+    @queue = Queue.new
   end
 
-  def register_reader(socket, action, future)
-    @readers[socket] = [action, future]
+  def register_reader(socket, fiber, future)
+    @readers[socket] = [fiber, future]
   end
 
-  def register_writer(socket, action, future)
-    @writers[socket] = [action, future]
+  def register_writer(socket, fiber, future)
+    @writers[socket] = [fiber, future]
   end
 
-  def add_task(task)
-    ready << [task, nil]
-    self.num_tasks += 1
+  def add_unready(fiber)
+    queue << [fiber, nil]
+    self.unready += 1
   end
 
-  def add_ready(task, msg: nil)
-    ready << [task, msg]
+  def add_ready(fiber, msg: nil)
+    queue << [fiber, msg]
   end
 
-  def run(task, msg)
-    future = task.resume(msg)
-    future.coroutine.call(self, task)
+  def run(fiber, msg)
+    future = fiber.resume(msg)
+    future.callback.call(self, fiber)
   rescue StandardError
-    self.num_tasks -= 1
+    self.unready -= 1
   end
 
   def loop
-    while num_tasks.positive?
-      if ready.empty?
+    while unready.positive?
+      if queue.empty?
         reader_sockets = readers.keys
         writer_sockets = writers.keys
         puts 'waiting on sockets...'
         ready_readers, ready_writers = select(reader_sockets, writer_sockets)
 
         ready_readers.each do |socket|
-          action, future = readers.delete(socket)
-          future.coroutine.call(self, action)
+          fiber, future = readers.delete(socket)
+          future.callback.call(self, fiber)
         end
 
         ready_writers.each do |socket|
-          action, future = writers.delete[socket]
-          future.coroutine.call(self, action)
+          fiber, future = writers.delete[socket]
+          future.callback.call(self, fiber)
         end
       end
 
-      task, msg = ready.pop
-      run(task, msg)
+      fiber, msg = queue.pop
+      run(fiber, msg)
     end
   end
 end
