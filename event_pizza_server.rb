@@ -12,12 +12,11 @@ class EventLoop
   end
 
   def register(source, event, action)
-    key = source.fileno
     case event
     when :read
-      @readers[key] = [source, event, action]
+      @readers[source] = [event, action]
     when :write
-      @writers[key] = [source, event, action]
+      @writers[source] = [event, action]
     else
       raise "Invalid event '#{event}'"
     end
@@ -30,23 +29,21 @@ class EventLoop
 
   def run
     loop do
-      puts "Waiting on readers: #{readers.keys.join(', ')} and writers: #{writers.keys.join(', ')}"
-      reader_sockets = readers.values.map(&:first)
-      writer_sockets = writers.values.map(&:first)
+      puts "Waiting on readers: #{readers.keys.map(&:fileno).join(', ')} and writers: #{writers.keys.map(&:fileno).join(', ')}"
+      reader_sockets = readers.keys
+      writer_sockets = writers.keys
       ready_readers, ready_writers = select(reader_sockets, writer_sockets)
 
       ready_readers.each do |socket|
-        fileno = socket.fileno
-        source, _, action = @readers[fileno]
-        @readers.delete(fileno)
-        action.call(source)
+        _, action = @readers[socket]
+        @readers.delete(socket)
+        action.call(socket)
       end
 
       ready_writers.each do |socket|
-        fileno = socket.fileno
-        source, _, action = writers[fileno]
-        writers.delete(fileno)
-        action.call(source)
+        _, action = writers[socket]
+        writers.delete(socket)
+        action.call(socket)
       end
     end
   end
