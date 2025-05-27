@@ -8,15 +8,14 @@ class Executor
   end
 
   def execute(*args, &block)
-    reader, writer = IO.pipe
+    reader, writer = UNIXSocket.pair
 
     thread_pool.add do
       result = block.call(*args)
-      reader.write(result)
-      reader.close
+      writer.write(result)
     end
 
-    writer
+    reader
   end
 end
 
@@ -58,6 +57,7 @@ class EventLoop
   def run_async(*args, &block)
     future_reader = executor.execute(*args, &block)
     future = Future.new
+    puts "running async #{block} with #{args}"
 
     handle_yield = lambda do |loop, task|
       msg = future_reader.read_nonblock(BUFFER_SIZE)

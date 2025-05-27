@@ -47,10 +47,10 @@ class Server
         break if data.nil?
 
         Fiber.yield socket.send("Thank you for ordering #{data.strip} pizzas!")
-        Fiber.yield event_loop.run_async(Integer(data.strip)) do |count|
+        Fiber.yield(event_loop.run_async(Integer(data.strip)) do |count|
           Kitchen.cook_pizza(count)
-        end
-        Fiber.yield socket.send("Your #{data.strip} pizzas are ready!")
+        end)
+        Fibr.yield socket.send("Your #{data.strip} pizzas are ready!")
       end
       puts "Closing #{socket.name}."
       socket.close
