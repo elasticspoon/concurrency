@@ -32,12 +32,16 @@ class Server
   def serve(socket)
     Fiber.new do
       loop do
+        Fiber.yield socket.send('How many pizzas would you like to order?')
+
         data = Fiber.yield socket.recv(BUFFER_SIZE)
 
         break if data.nil?
 
         Fiber.yield socket.send("Thank you for ordering #{data.strip} pizzas!")
       end
+      puts "Closing #{socket.name}."
+      socket.close
     end
   end
 end
