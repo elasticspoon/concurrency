@@ -1,11 +1,34 @@
+require_relative './thread_pool'
+
+class Executor
+  attr_reader :thread_pool
+
+  def initialize
+    @thread_pool = ThreadPool.new(3)
+  end
+
+  def execute(*args, &block)
+    reader, writer = IO.pipe
+
+    thread_pool.add do
+      result = block.call(*args)
+      reader.write(result)
+      reader.close
+    end
+
+    writer
+  end
+end
+
 class EventLoop
-  attr_accessor :readers, :writers, :unready, :queue
+  attr_accessor :readers, :writers, :unready, :queue, :executor
 
   def initialize
     @unready = 0
     @readers = {}
     @writers = {}
     @queue = Queue.new
+    @executor = Executor.new
   end
 
   def register_reader(socket, fiber, future)
@@ -30,6 +53,21 @@ class EventLoop
     future.callback.call(self, fiber)
   rescue StandardError
     self.unready -= 1
+  end
+
+  def run_async(*args, &block)
+    future_reader = executor.execute(*args, &block)
+    future = Future.new
+
+    handle_yield = lambda do |loop, task|
+      msg = future_reader.read_nonblock(BUFFER_SIZE)
+      loop.add_ready(task, msg: msg)
+    rescue IO::WaitReadable
+      loop.register_reader(future_reader, task, future)
+    end
+
+    future.callback = handle_yield
+    future
   end
 
   def loop
