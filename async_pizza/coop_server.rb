@@ -36,7 +36,7 @@ class Server
 
         break if data.nil?
 
-        Fiber.yield socket.send(data)
+        Fiber.yield socket.send("Thank you for ordering #{data.strip} pizzas!")
       end
     end
   end
