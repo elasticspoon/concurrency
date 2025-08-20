@@ -1,5 +1,5 @@
 [tasks]
 build = "docker build -t ruby-server ."
-run = "docker run -p 3000:3000 --memory=1g --memory-swap=1g ruby-server"
-server = "docker build -t ruby-server . && docker run -p 3000:3000 --memory=1g --memory-swap=1g ruby-server"
-benchmark = "ab -n 1000 -c 10 http://localhost:3000/"
+start = "docker run -p 3000:3000 --memory=1g --cpus=4 --oom-kill-disable ruby-server"
+server = "mise build && mise start"
+benchmark = "./benchmark.sh"
