@@ -46,11 +46,22 @@ class Server
       HTTP/1.1 200 OK
       Content-Type: text/plain
 
-      #{body}
+      #{fibonacci(10_000)}
     RESP
 
     conn.write(http_response)
     puts "Responded to #{conn.inspect}"
+  end
+
+  def fibonacci(n)
+    return n if n <= 1
+
+    a = 0
+    b = 1
+    (2..n).each do |i|
+      a, b = b, a + b
+    end
+    b
   end
 end
 
