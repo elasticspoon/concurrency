@@ -32,7 +32,6 @@ class Server
 
   def start
     loop do
-      sleep 1 if ENV['SLOW']
       accept
       @connections.each { serve(it) }
     end
