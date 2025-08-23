@@ -21,23 +21,58 @@ class Server
     data, = conn.recv_nonblock(BUFFER_SIZE)
     return if data.nil?
 
-    conn.write(response)
+    path = parse_request_path(data)
+
+    case path
+    when '/cpu'
+      conn.write(cpu_response)
+    when '/sleep'
+      conn.write(sleep_response)
+    else
+      conn.write(default_response)
+    end
+
     conn.close
   rescue IO::WaitReadable
     retry
   end
 
-  def response
+  def parse_request_path(request_data)
+    request_line = request_data.lines.first
+    return '/' unless request_line
+
+    parts = request_line.split
+    parts[1] if parts.size >= 2
+  rescue StandardError
+    '/'
+  end
+
+  def cpu_response
     <<~RESP
       HTTP/1.1 200 OK
       Content-Type: text/plain
 
-      #{fibonacci(10_000)}
+      CPU-intensive work completed: #{fibonacci(10_000)}
     RESP
   end
 
-  def blocking_io(_time)
+  def sleep_response
     sleep 2
+    <<~RESP
+      HTTP/1.1 200 OK
+      Content-Type: text/plain
+
+      Slept for 2 seconds
+    RESP
+  end
+
+  def default_response
+    <<~RESP
+      HTTP/1.1 200 OK
+      Content-Type: text/plain
+
+      Default response: #{fibonacci(1000)}
+    RESP
   end
 
   def fibonacci(count)
