@@ -12,7 +12,8 @@ class Server
   end
 
   def start
-    Socket.accept_loop(@server) do |connection|
+    loop do
+      connection = @server.accept
       handler.handle(connection)
       connection.close
     end

@@ -1,15 +1,14 @@
 class RequestHandler
   BUFFER_SIZE = 1024
 
-  def initialize
-  end
+  def initialize; end
 
   def handle(connection)
     data, = connection.recv_nonblock(BUFFER_SIZE)
     return if data.nil?
 
     path = parse_request_path(data)
-    
+
     case path
     when '/cpu'
       connection.write(cpu_response)
@@ -27,7 +26,7 @@ class RequestHandler
   def parse_request_path(request_data)
     request_line = request_data.lines.first
     return '/' unless request_line
-    
+
     parts = request_line.split
     parts[1] if parts.size >= 2
   rescue StandardError
@@ -73,3 +72,4 @@ class RequestHandler
     b
   end
 end
+
