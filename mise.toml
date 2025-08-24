@@ -7,3 +7,6 @@ depends = ["build"]
 
 [tasks.benchmark]
 run = "./benchmark.sh"
+
+[tools]
+ruby = "jruby-9.4.13.0"
