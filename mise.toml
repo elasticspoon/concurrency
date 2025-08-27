@@ -9,4 +9,4 @@ depends = ["build"]
 run = "./benchmark.sh"
 
 [tools]
-ruby = "jruby-9.4.13.0"
+ruby = "3.4.5"
