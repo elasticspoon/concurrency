@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'socket'
 
 ADDRESS = ['127.0.0.1', 3000].freeze
@@ -14,7 +16,7 @@ class Server
   end
 
   def accept
-    conn, addr = @server.accept_nonblock
+    conn, = @server.accept_nonblock
     puts "conn is a #{conn.class}, #{conn.object_id}"
     puts 'Connected to client...'
     @connections << conn

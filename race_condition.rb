@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BankAccount
   attr_accessor :balance
 
@@ -6,13 +8,13 @@ class BankAccount
   end
 
   def deposit(amount)
-    raise "can't deposit less than 0" if amount < 0
+    raise "can't deposit less than 0" if amount.negative?
 
     @balance += amount
   end
 
   def withdraw(amount)
-    raise "Insufficient funds" if balance < amount
+    raise 'Insufficient funds' if balance < amount
 
     @balance -= amount
   end
@@ -31,7 +33,7 @@ class Atm
 end
 
 account = BankAccount.new
-atms  = (0..1000).map do |i|
+atms = (0..1000).map do |_i|
   Process.fork do
     Atm.new(account).transaction
   end

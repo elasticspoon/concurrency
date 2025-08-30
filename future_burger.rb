@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Future
   attr_accessor :done, :fiber
   attr_reader :result

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 queue = Queue.new
 
 class Event
@@ -6,14 +8,14 @@ class Event
     @callback = callback
   end
 
-def run  
+  def run
     puts "Calling #{@name}"
-    @callback.call if @callback
+    @callback&.call
   end
 end
 
-who_there = Event.new("Who")
-knock = Event.new("knock knock") do
+who_there = Event.new('Who')
+knock = Event.new('knock knock') do
   queue.push(who_there)
 end
 

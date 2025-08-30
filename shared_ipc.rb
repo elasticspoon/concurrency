@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 SIZE = 5
 $shared_mem = Array.new(SIZE) { -1 }
 

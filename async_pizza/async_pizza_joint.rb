@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative './event_loop'
 require_relative './async_socket'
 require 'socket'

@@ -1,5 +1,6 @@
+# frozen_string_literal: true
+
 require 'socket'
-require 'thread'
 require_relative 'request_handler'
 
 SERVER_PORT = 3000

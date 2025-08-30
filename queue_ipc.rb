@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 queue = Thread::Queue.new
 
 def read_from_queue(queue)

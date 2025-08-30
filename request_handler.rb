@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RequestHandler
   BUFFER_SIZE = 1024
 
@@ -72,4 +74,3 @@ class RequestHandler
     b
   end
 end
-

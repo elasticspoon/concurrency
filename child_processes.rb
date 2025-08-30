@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def run_child
   puts "Child process started with PID: #{Process.pid}"
   puts "Child parent PID: #{Process.ppid}"

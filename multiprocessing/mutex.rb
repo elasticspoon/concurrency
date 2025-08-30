@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MutexDeadlockTogether
   def initialize
     @flag = [false, false]

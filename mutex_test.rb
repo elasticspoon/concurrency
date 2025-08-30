@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'multiprocessing/mutex'
 
 class ThreadSafetyTest
@@ -50,4 +52,3 @@ if __FILE__ == $PROGRAM_NAME
   test = ThreadSafetyTest.new(thread_count: 2, iterations: 10_000)
   test.run
 end
-

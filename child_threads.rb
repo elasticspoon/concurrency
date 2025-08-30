@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def cpu_waster
   Thread.current.name = "Cpu-waster #{Thread.current.object_id}"
   sleep 3

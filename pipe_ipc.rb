@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 reader, writer = IO.pipe
 
 def write_to_pipe(writer)

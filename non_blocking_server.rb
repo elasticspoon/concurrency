@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'socket'
 
 SERVER_PORT = 3000
@@ -39,8 +41,7 @@ class Server
     @server.close
   end
 
-  def respond(conn, data)
-    body = "Thanks for ordering #{data.strip} pizzas!"
+  def respond(conn, _data)
     http_response = <<~RESP
       HTTP/1.1 200 OK
       Content-Type: text/plain
@@ -57,7 +58,7 @@ class Server
 
     a = 0
     b = 1
-    (2..n).each do |i|
+    (2..n).each do |_i|
       a, b = b, a + b
     end
     b

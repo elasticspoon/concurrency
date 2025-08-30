@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'socket'
 
 ADDRESS = ['127.0.0.1', 3000].freeze
@@ -5,7 +7,7 @@ BUFFER_SIZE = 1024
 
 class Server
   def initialize
-    puts "Starting server..."
+    puts 'Starting server...'
     @server = Socket.new(Socket::PF_INET, Socket::SOCK_STREAM)
     @server.bind(Addrinfo.tcp(*ADDRESS))
     @server.listen(5)
@@ -13,15 +15,15 @@ class Server
   end
 
   def accept
-    conn, addr = @server.accept
+    conn, = @server.accept
     puts "conn is a #{conn.class}, #{conn.object_id}"
-    puts "Connected to client..."
+    puts 'Connected to client...'
     conn
   end
 
   def serve(conn)
     loop do
-      data, _ = conn.recvfrom(BUFFER_SIZE)
+      data, = conn.recvfrom(BUFFER_SIZE)
       break if data.nil?
 
       conn.puts "Thanks for ordering #{data.strip} pizzas!"

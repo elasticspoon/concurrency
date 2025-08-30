@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EventLoop
   def initialize
     @tasks = Queue.new
