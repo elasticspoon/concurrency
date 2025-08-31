@@ -3,8 +3,6 @@
 class RequestHandler
   BUFFER_SIZE = 1024
 
-  def initialize; end
-
   def handle(connection)
     data, = connection.recv_nonblock(BUFFER_SIZE)
     return if data.nil?
@@ -55,11 +53,12 @@ class RequestHandler
   end
 
   def default_response
+    sleep 0.07
     <<~RESP
       HTTP/1.1 200 OK
       Content-Type: text/plain
 
-      Default response: #{fibonacci(1000)}
+      Default response: #{fibonacci(8000)}
     RESP
   end
 
