@@ -7,6 +7,26 @@ paginate: true
 
 ---
 
+- I had someone come to me with the following config for a background job processor
+
+```yaml
+workers:
+  - queues: [critical]
+    threads: 20
+    processes: 1
+  - queues: ["default", "low"]
+    threads: 3
+    processes: 1
+```
+
+- Concurrency is a black box in Ruby
+- Introduce Myself
+  - software developer of 5 years
+  - work at USCIS?
+- Talk overview
+  - hopefully by end of talk you will understand why that config did not makes sense
+  - you will have a decent grasp of what is concurrency and why it matters
+  - you will have a grasp of the 3 main concurrency Primitives in ruby
 - What is Concurrency?
   - Concurrency is doing more than 1 thing at a time
   - cooking: boiling pasta which chopping tomatoes
@@ -25,28 +45,6 @@ paginate: true
     Parallelism is about doing lots of things at once." - Rob Pike
   - Parallelism is a kind of concurrency
   - The same way that a square is a kind of rectangle
-- Who Cares?
-  - knowing how to configure your server
-  - knowing how to configure your background job processor
-
-```
-workers:
-  - queues: [ critical, default, low ]
-    threads: 12
-    processes: <%= ENV.fetch("JOB_CONCURRENCY", 1) %>
-  - queues: [ default, low, critical ]
-    threads: 4
-    processes: <%= ENV.fetch("JOB_CONCURRENCY", 1) %>
-```
-
-- talk more generally about servers
-  - we use them but how much do we know
-- moores law
-- moores law is ending
-- if we can't make stuff faster via faster cpus then we need to do more work at once
-- Introduce Myself
-  - software developer of 5 years
-  - work at USCIS?
 - Overview
 - 3 Primary Primitives
   - Process (Process)
@@ -54,17 +52,18 @@ workers:
   - Coroutine (Fiber)
 - Introduce server
 - Introduce the goal
-- Lets get started
-
 - What is a process?
   - shared memory
   - how do we create a new process in ruby
   - per process server
   - preforking server
-
 - What is a thread?
   - per thread server
   - thread pool
   - prefork + threads
-
 - What is a fiber?
+- Conclusion
+  - back to example of the yaml config
+  - know you tools
+  - moores law
+  - moores law is ending
