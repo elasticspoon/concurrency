@@ -7,7 +7,6 @@ SERVER_PORT = 3000
 
 class Server
   def initialize
-    # Create the underlying server socket.
     @server = TCPServer.new(SERVER_PORT)
     @handler = RequestHandler.new
     puts "Listening on port #{@server.local_address.ip_port}"
