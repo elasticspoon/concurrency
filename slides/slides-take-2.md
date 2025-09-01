@@ -1,8 +1,13 @@
-# A Tale of Three Rubies: Concurrency Explained
-
+---
+theme: uncover
+class: invert
+paginate: false
+size: 4k
 ---
 
-## A Puzzling Configuration
+# Concurrency in Ruby: From `fork()` to Fiber
+
+---
 
 ```yaml
 workers:
@@ -77,6 +82,28 @@ That's parallelism. It requires more hardware (or hands).
 
 ---
 
+## OS level versus Application level
+
+---
+
+<style scoped>
+img {
+  width: 600px;
+}
+</style>
+
+![Diagram of user level vs kernel level](./user-vs-kernel-diagram.png)
+
+---
+
+![meme of user space hiding kernel space ugliness](./user-vs-kernel-meme.jpg)
+
+---
+
+![tracing a file.write call from user space to kernel](./user-vs-kernel-file-write.png)
+
+---
+
 ## Web Server
 
 ---
@@ -127,11 +154,25 @@ end
 
 ---
 
+## Default Response
+
+```rb
+def default_response
+  sleep 0.07
+  <<~RESP
+    HTTP/1.1 200 OK
+    Content-Type: text/plain
+
+    Default response: #{fibonacci(8000)}
+  RESP
+end
+```
+
+---
+
 ## The Server
 
-```
-# frozen_string_literal: true
-
+```rb
 require 'socket'
 require_relative 'request_handler'
 
@@ -139,7 +180,6 @@ class Server
   def initialize(port:)
     @server = TCPServer.new(port)
     @handler = RequestHandler.new
-    puts "Listening on port #{@server.local_address.ip_port}"
   end
 
   def start
@@ -157,6 +197,22 @@ server.start
 
 ---
 
+## Server: Primary Routine
+
+```rb
+def start
+  loop do
+    connection = @server.accept
+    @handler.handle(connection)
+    connection.close
+  end
+end
+```
+
+---
+
+---
+
 ## 3 Concurrency Primitives
 
 - **Process** (`Process`)
@@ -171,9 +227,32 @@ A self-contained program with its own memory. Heavy, but isolated and safe.
 
 ---
 
-### Server Model: One Process Per Request
+### One Process Per Request
 
-Simple, but slow. Each new connection creates a whole new process.
+---
+
+### One Process Per Request
+
+```rb
+def start
+  loop do
+    connection = @server.accept
+
+    pid = fork do
+      handler.handle(connection)
+    ensure
+      connection.close
+    end
+
+    connection.close
+    Process.detach(pid)
+  end
+end
+```
+
+---
+
+## Process Per Connection has high overhead for creating connections
 
 ---
 
@@ -185,7 +264,7 @@ Create a pool of processes upfront. This is much faster\!
 
 ---
 
-## 2\. The Thread
+## The Thread
 
 A lighter-weight path of execution _within_ a process. Threads share memory.
 
@@ -213,7 +292,7 @@ The hybrid model\! Multiple processes, each with its own pool of threads.
 
 ---
 
-## 3\. The Fiber (Coroutine)
+## The Fiber (Coroutine)
 
 Extremely lightweight. You control when it pauses and resumes. It's cooperative.
 
@@ -256,6 +335,6 @@ Concurrency is the future of performance.
 
 ---
 
-# Thank You\
+# Thank You
 
 Questions?
