@@ -71,8 +71,8 @@ class Server
 end
 
 if __FILE__ == $0
-  processes = ARGV[0] ? ARGV[0].to_i : 3
-  threads = ARGV[1] ? ARGV[1].to_i : 3
+  processes = ENV.fetch('WEB_CONCURRENCY', 3).to_i
+  threads = ENV.fetch('RAILS_THREADS', 3).to_i
   server = Server.new(threads:, processes:)
   server.start
 end

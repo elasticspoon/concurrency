@@ -43,7 +43,6 @@ class Server
     fork do
       loop do
         connection = @server.accept
-
         handler.handle(connection)
         connection.close
       end
@@ -53,7 +52,7 @@ class Server
 end
 
 if __FILE__ == $0
-  processes = ARGV[0] ? ARGV[0].to_i : 10
+  processes = ENV.fetch('WEB_CONCURRENCY', 10).to_i
   server = Server.new(processes:)
   server.start
 end
