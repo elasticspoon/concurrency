@@ -223,7 +223,7 @@ end
 
 ## Process
 
-A self-contained program with its own memory. Heavy, but isolated and safe.
+OS Construct that runs a program.
 
 ---
 
@@ -252,7 +252,15 @@ end
 
 ---
 
-## Process Per Connection has high overhead for creating connections
+## Process Per Connection
+
+![process per connections](./process-per-connection.svg)
+
+---
+
+## Thread Per Connection
+
+![thread per connections](./thread-per-connection.svg)
 
 ---
 

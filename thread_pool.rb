@@ -40,7 +40,7 @@ class Server
 end
 
 if __FILE__ == $0
-  _processes = ARGV[0] ? ARGV[0].to_i : 3
+  _processes = ARGV[0] ? ARGV[0].to_i : 1
   threads = ARGV[1] ? ARGV[1].to_i : 3
   server = Server.new(threads:)
   server.start

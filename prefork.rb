@@ -11,7 +11,7 @@ class Server
     @server = TCPServer.new(SERVER_PORT)
     @handler = RequestHandler.new
     @processes = processes
-    puts "Listening on port #{@server.local_address.ip_port} with #{@processes} processes"
+    puts "Starting prefork server on port #{SERVER_PORT} with #{@processes} processes"
   end
 
   def start

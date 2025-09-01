@@ -2,7 +2,7 @@
 run = "docker build -t ruby-server ."
 
 [tasks.start]
-run = 'docker run -p 3000:3000 --memory=1g --cpus=4 --oom-kill-disable ruby-server ruby {{arg(default="blocking_single_connection_server.rb")}}'
+run = 'docker run -p 3000:3000 --memory=1g --cpus=4 --oom-kill-disable --rm ruby-server ruby {{arg(default="blocking_single_connection_server.rb")}}'
 depends = ["build"]
 
 [tasks.benchmark]
