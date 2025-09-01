@@ -227,11 +227,33 @@ OS Construct that runs a program.
 
 ---
 
-### One Process Per Request
+## Ruby Process
+
+```rb
+fork do
+  # do stuff
+end
+```
 
 ---
 
-### One Process Per Request
+## Processes Can Parallelize Work
+
+```rb
+2.times do
+  fork do
+    generate_pdf
+  end
+end
+```
+
+---
+
+![two process no cpu](./two-pdf-gen-no-cpu.svg)
+
+---
+
+### Process Based Server
 
 ```rb
 def start
@@ -258,23 +280,84 @@ end
 
 ---
 
+<style scoped>
+img {
+  width: 400px;
+}
+</style>
+
+## Process Internals
+
+![Process Internals](./process-internals.svg)
+
+---
+
+<style scoped>
+img {
+  width: 600px;
+}
+</style>
+
+![process fork](./forked-process.svg)
+
+---
+
+![real single threaded app](./single-thread-real-app.svg)
+
+---
+
+## Don't Forget the Hardware Requirement
+
+---
+
+![two process two cpu](./two-pdf-gen-two-cpu.svg)
+
+---
+
+![two process one cpu](./two-pdf-gen-one-cpu.svg)
+
+---
+
+## Preforking Server
+
+```rb
+def start
+  PROCESS_COUNT.times do
+    fork do
+      loop do
+        connection = @server.accept
+        handler.handle(connection)
+        connection.close
+      end
+    end
+  end
+end
+```
+
+---
+
+## Impact
+
+Optimal Preforking Server RPS vs Process Per Request
+
+---
+
+## Summary: Processes
+
+- Allow True Parallelism
+- One Process Per CPU Core
+
+---
+
+## Threads
+
+A lighter-weight path of execution _within_ a process. Threads share memory.
+
+---
+
 ## Thread Per Connection
 
 ![thread per connections](./thread-per-connection.svg)
-
----
-
-### Server Model: The Preforking Server
-
-Create a pool of processes upfront. This is much faster\!
-
-(e.g., Unicorn 🦄)
-
----
-
-## The Thread
-
-A lighter-weight path of execution _within_ a process. Threads share memory.
 
 ---
 
