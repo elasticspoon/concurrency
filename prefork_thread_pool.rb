@@ -61,9 +61,6 @@ class Server
     Thread.new do
       loop do
         connection = @server.accept
-        $stdout.puts 'accepting...'
-        $stdout.flush
-
         handler.handle(connection)
         connection.close
       end
