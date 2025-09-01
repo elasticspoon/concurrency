@@ -4,21 +4,21 @@ require 'socket'
 require_relative 'request_handler'
 
 SERVER_PORT = 3000
-WORKERS = 10
-THREADS = 10
 
 class Server
-  def initialize
+  def initialize(processes:, threads:)
     # Create the underlying server socket.
     @server = TCPServer.new(SERVER_PORT)
     @handler = RequestHandler.new
+    @processes = processes
+    @threads = threads
     puts "Listening on port #{@server.local_address.ip_port}"
   end
 
   def start
     child_pids = []
 
-    WORKERS.times do
+    @processes.times do
       child_pids << spawn_child
     end
 
@@ -50,7 +50,7 @@ class Server
     Thread.abort_on_exception = true
     threads = ThreadGroup.new
 
-    THREADS.times do
+    @threads.times do
       threads.add spawn_thread
     end
 
@@ -70,5 +70,9 @@ class Server
   private attr_reader :handler
 end
 
-server = Server.new
-server.start
+if __FILE__ == $0
+  processes = ARGV[0] ? ARGV[0].to_i : 3
+  threads = ARGV[1] ? ARGV[1].to_i : 3
+  server = Server.new(threads:, processes:)
+  server.start
+end

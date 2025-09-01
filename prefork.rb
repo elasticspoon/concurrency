@@ -4,20 +4,20 @@ require 'socket'
 require_relative 'request_handler'
 
 SERVER_PORT = 3000
-CONCURRENCY = 10
 
 class Server
-  def initialize
+  def initialize(processes:)
     # Create the underlying server socket.
     @server = TCPServer.new(SERVER_PORT)
     @handler = RequestHandler.new
-    puts "Listening on port #{@server.local_address.ip_port}"
+    @processes = processes
+    puts "Listening on port #{@server.local_address.ip_port} with #{@processes} processes"
   end
 
   def start
     child_pids = []
 
-    CONCURRENCY.times do
+    @processes.times do
       child_pids << spawn_child
     end
 
@@ -52,5 +52,8 @@ class Server
   private attr_reader :handler
 end
 
-server = Server.new
-server.start
+if __FILE__ == $0
+  processes = ARGV[0] ? ARGV[0].to_i : 10
+  server = Server.new(processes:)
+  server.start
+end
