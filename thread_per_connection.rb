@@ -16,9 +16,6 @@ class Server
   def start
     loop do
       connection = @server.accept
-      $stdout.puts 'accepting...'
-      $stdout.flush
-
       Thread.new do
         handler.handle(connection)
         connection.close
