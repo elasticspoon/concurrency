@@ -9,10 +9,10 @@ class Benchmark
   BENCHMARK_URL = "http://localhost:#{SERVER_PORT}/"
   
   def initialize(server:, 
-                 process_counts: [1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 20, 24],
-                 thread_counts: [1, 2, 4, 8, 16, 32, 48, 64, 80, 96, 112],
+                 process_counts: [4, 5, 6, 7, 8, 9, 10, 11],
+                 thread_counts: [1],
                  requests_per_test: 1000,
-                 bench_concurrency: 100)
+                 bench_concurrency: 8)
     @process_counts = process_counts
     @thread_counts = thread_counts
     @requests_per_test = requests_per_test
@@ -30,7 +30,7 @@ class Benchmark
 
     @process_counts.each do |process_count|
       @thread_counts.each do |thread_count|
-        benchmark_configuration(process_count, thread_count)
+        benchmark_configuration(process_count, thread_count, process_count * thread_count * 2)
       end
     end
 
@@ -40,7 +40,7 @@ class Benchmark
 
   private
 
-  def benchmark_configuration(process_count, thread_count)
+  def benchmark_configuration(process_count, thread_count, bench_concurrency)
     config_key = "p#{process_count}_t#{thread_count}"
     puts "\nTesting with #{process_count} processes, #{thread_count} threads..."
     
@@ -51,7 +51,7 @@ class Benchmark
     sleep 2
     
     # Run Apache bench
-    result = run_apache_bench
+    result = run_apache_bench(bench_concurrency)
     
     # Stop server
     stop_server(server_pid)
@@ -67,7 +67,13 @@ class Benchmark
   end
 
   def start_server(process_count, thread_count)
-    spawn("docker", "run", "-p", "3000:3000", "--memory=1g", "--cpus=4", "--oom-kill-disable", "--rm", "ruby-server", "ruby", @server, process_count.to_s, thread_count.to_s, out: "/dev/null", err: "/dev/null")
+    spawn("docker", "run",
+          "-p", "3000:3000", 
+          "-e", "WEB_CONCURRENCY=#{process_count}",
+          "-e", "RAILS_THREADS=#{thread_count}",
+          "--rm", "ruby-server",
+          "ruby", @server,
+           out: "/dev/null", err: "/dev/null")
   end
 
   def stop_server(pid)
@@ -77,8 +83,8 @@ class Benchmark
     # Process already dead
   end
 
-  def run_apache_bench
-    command = "ab -n #{@requests_per_test} -c #{@bench_concurrency} #{BENCHMARK_URL}"
+  def run_apache_bench(bench_concurrency)
+    command = "ab -n #{@requests_per_test} -c #{bench_concurrency} #{BENCHMARK_URL}"
     
     stdout, stderr, status = Open3.capture3(command)
     
@@ -163,8 +169,6 @@ if __FILE__ == $0
   
   benchmark = Benchmark.new(
     server: server,
-    process_counts: process_counts,
-    thread_counts: thread_counts
   )
   
   benchmark.run

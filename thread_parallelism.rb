@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'benchmark'
-require_relative './fib_ext'
 
 class Runner
   def fibonacci(count = 1_000_000)
@@ -13,10 +12,6 @@ class Runner
       a, b = b, a + b
     end
     b
-  end
-
-  def native_fib(count = 1_000_000)
-    puts FibExt.fib_native(count)
   end
 
   def run_sleep(time = 5)
@@ -61,12 +56,50 @@ end
 #   Runner.new.run_thread(:fibonacci)
 # end
 # puts "Thread fib 1M took #{time} seconds"
+#
+def fibonacci(count = 1_000_000)
+  return count if count <= 1
+
+  a = 0
+  b = 1
+  (2..count).each do
+    a, b = b, a + b
+  end
+  b
+end
 
 time = Benchmark.realtime do
-  Runner.new.run_thread(:native_fib)
+  fibonacci 300_000
+  fibonacci 300_000
+  fibonacci 300_000
 end
-puts "Thread native C fib 1M took #{time} seconds"
+puts "Serial fibonacci took #{time} seconds"
 
+time = Benchmark.realtime do
+  threads = []
+  threads << Thread.new { fibonacci 300_000 }
+  threads << Thread.new { fibonacci 300_000 }
+  threads << Thread.new { fibonacci 300_000 }
+  threads.each(&:join)
+end
+puts "Parallel fibonacci took #{time} seconds"
+
+# time = Benchmark.realtime do
+#   sleep 2
+#   sleep 2
+#   sleep 2
+# end
+# puts "Serial sleep took #{time} seconds"
+#
+# time = Benchmark.realtime do
+#   threads = []
+#   threads << Thread.new { sleep 2 }
+#   threads << Thread.new { sleep 2 }
+#   threads << Thread.new { sleep 2 }
+#   threads.each(&:join)
+# end
+# puts "Serial sleep took #{time} seconds"
+#
 # time = Benchmark.realtime do
 #   Runner.new.run_sleep
 #   Runner.new.run_sleep
