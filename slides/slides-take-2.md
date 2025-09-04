@@ -9,10 +9,25 @@ size: 4k
 
 ---
 
-```yaml
+<style scoped>
+img {
+  width: 500px;
+}
+</style>
+
+![generation of pdfs](./pds.svg)
+
+---
+
+![mailing of pdf](./outgoing-pds.svg)
+
+---
+
+```diff
 workers:
   - queues: [critical]
-    threads: 20
+-    threads: 3
++    threads: 5
     processes: 1
   - queues: ["default", "low"]
     threads: 3
@@ -21,29 +36,60 @@ workers:
 
 ---
 
-## Your Speaker
+```diff
+workers:
+  - queues: [critical]
+-    threads: 5
++    threads: 10
+    processes: 1
+  - queues: ["default", "low"]
+    threads: 3
+    processes: 1
+```
+
+---
+
+```diff
+workers:
+  - queues: [critical]
+-    threads: 10
++    threads: 20
+    processes: 1
+  - queues: ["default", "low"]
+    threads: 3
+    processes: 1
+```
+
+---
+
+![grokking concurrency](./groking-conc.jpg)
+
+---
+
+## Stay Tuned and Find Out
+
+---
+
+## About Me
 
 - Yuri Bocharov
 - U.S. Citizenship and Immigration Services (USCIS)
-- Software Developer (5 years)
 - Platform / Infrastructure
 
 ---
 
 ## Talk Overview
 
-- Why that config didn't work as expected.
 - What is concurrency
 - Three main concurrency primitives
 - How concurrency primitives are used
+- Why that config didn't work as expected.
 
 ---
 
 ## Web Server
 
 ---
-
-## Main Loop
 
 ```rb
 require 'socket'
@@ -61,11 +107,29 @@ class Server
     end
   end
 
-  # ....
+  def handle
+    # ...
+  end
 end
 
 server = Server.new(port: 3000)
 server.start
+```
+
+---
+
+```rb
+@server = TCPServer.new(port)
+```
+
+---
+
+```rb
+loop do
+  connection = @server.accept
+  handle(connection)
+  connection.close
+end
 ```
 
 ---
@@ -122,7 +186,18 @@ RESP
 
 ---
 
-chart current web server perf
+```rb
+server = Server.new(port: 3000)
+server.start
+```
+
+---
+
+![serial server diagram]()
+
+---
+
+![chart serial blocking web server perf]()
 
 ---
 
@@ -157,6 +232,10 @@ Concurrency is **dealing** with more than one task at a time.
 ---
 
 Parallelism is taking more than one **action** at a time.
+
+---
+
+![stove top with pasta and pan with saute and chopping onion]()
 
 ---
 
@@ -342,6 +421,14 @@ img {
 
 ---
 
+![real single threaded app](./single-thread-real-app.svg)
+
+---
+
+![prefork server diagram]()
+
+---
+
 ## Preforking Server
 
 ```rb
@@ -360,13 +447,16 @@ end
 
 ---
 
-![prefork server diagram]()
-
----
-
 ## Impact
 
 Optimal Preforking Server RPS vs Process Per Request
+
+---
+
+## Real World
+
+- Unicorn
+- Pitchfork
 
 ---
 
@@ -401,6 +491,10 @@ img {
 
 ---
 
+![single process multi thread server]()
+
+---
+
 ```rb
 Thread.new do
   # do_work
@@ -417,6 +511,19 @@ time = Benchmark.realtime do
 end
 puts "Serial sleep took #{time} seconds"
 # => Serial sleep took 6.012791999964975 seconds
+```
+
+---
+
+```rb
+time = Benchmark.realtime do
+  threads = []
+  threads << Thread.new { sleep 2 }
+  threads << Thread.new { sleep 2 }
+  threads << Thread.new { sleep 2 }
+  threads.each(&:join)
+end
+puts "Parallel sleep took #{time} seconds"
 ```
 
 ---
@@ -585,10 +692,6 @@ end
 
 ---
 
-pure threadpool impact
-
----
-
 ![preforking thread pool diagram]()
 
 ---
@@ -617,11 +720,7 @@ end
 
 ---
 
-## How many?
-
----
-
-show graph
+![prefork thread pool results]()
 
 ---
 
@@ -649,11 +748,11 @@ show graph
 
 ---
 
-![diagram of fibers within a thread]()
+![diagram of fibers within a thread](./thread-containing-fiber.svg)
 
 ---
 
-thread containing many fibers diagram
+![thread containing many fibers diagram](./thread-many-fibers.svg)
 
 ---
 
@@ -662,6 +761,14 @@ code to start a fiber
 ---
 
 ## Fibers are cooperative
+
+---
+
+## Threads are preemptive
+
+---
+
+drawing of young kids all being given a turn on the ipad
 
 ---
 
@@ -695,10 +802,6 @@ img {
 
 ---
 
-drawing of young kids all being given a turn on the ipad
-
----
-
 ## Fiber are cooperative
 
 ---
@@ -715,11 +818,11 @@ what does that mean?
 
 ---
 
-delegating to thread pool diagram
+![delegating to thread pool diagram]()
 
 ---
 
-fiber per connection diagram
+![fiber per connection diagram]()
 
 ---
 
@@ -732,6 +835,8 @@ fiber per connection diagram
 
 ## Final Stats?
 
+![final server comparison]()
+
 ---
 
 ## Recap: Fibers
@@ -743,14 +848,18 @@ fiber per connection diagram
 
 ## So, About That Config
 
+---
+
 ```yaml
 workers:
   - queues: [critical]
-    threads: 20 # <- The problem child
+    threads: 20
     processes: 1
 ```
 
-Why was this ineffective for CPU-bound work in Ruby? **The GVL.**
+---
+
+![image of 20 threads with 1 glv working on pdfs](./20-thread-pdf-gen.svg)
 
 ---
 
@@ -759,6 +868,12 @@ Why was this ineffective for CPU-bound work in Ruby? **The GVL.**
 - **Process:** Great for safety and CPU-bound parallelism.
 - **Thread:** Great for I/O-bound work (database calls, APIs).
 - **Fiber:** Best for massive I/O concurrency.
+
+---
+
+## Meta Conclusion
+
+Dig deeper.
 
 ---
 
@@ -789,7 +904,3 @@ img {
 ---
 
 ![tracing a file.write call from user space to kernel](./user-vs-kernel-file-write.png)
-
----
-
----
