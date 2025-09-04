@@ -852,7 +852,11 @@ img {
 
 ---
 
-code to start a fiber
+```rb
+Fiber.new do
+  # do_stuff
+end
+```
 
 ---
 
@@ -906,11 +910,17 @@ img {
 
 ---
 
-yielding from a fiber code
+```rb
+Fiber.new do
+  # do stuff
+  Fiber.yield some_value
+  # do more stuff
+end
+```
 
 ---
 
-what does that mean?
+## So What?
 
 ---
 
