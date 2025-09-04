@@ -23,6 +23,16 @@ img {
 
 ---
 
+<style scoped>
+img {
+  width: 1100px;
+}
+</style>
+
+![pdf-queue](./pdf-queue.svg)
+
+---
+
 ```diff
 workers:
   - queues: [critical]
@@ -61,6 +71,12 @@ workers:
 ```
 
 ---
+
+<style scoped>
+img {
+  width: 500px;
+}
+</style>
 
 ![grokking concurrency](./groking-conc.jpg)
 
@@ -193,9 +209,17 @@ server.start
 
 ---
 
-![serial server diagram]()
+<style scoped>
+img {
+  width: 1100px;
+}
+</style>
+
+![serial server diagram](./serial-server.svg)
 
 ---
+
+TODO
 
 ![chart serial blocking web server perf]()
 
@@ -215,15 +239,15 @@ Concurrency is **dealing** with more than one task at a time.
 
 ---
 
-![stove top with pasta]()
+![stove top with pasta](./cooking-1task.jpg)
 
 ---
 
-![stove top with pasta and pan with saute]()
+![stove top with pasta and pan with saute](./cooking-2tasks.jpg)
 
 ---
 
-![stove top with pasta and pan with saute and chopping onion]()
+![stove top with pasta and pan with saute and chopping onion](./cooking-3tasks.jpg)
 
 ---
 
@@ -235,19 +259,15 @@ Parallelism is taking more than one **action** at a time.
 
 ---
 
-![stove top with pasta and pan with saute and chopping onion]()
+![stove top with pasta and pan with saute and chopping onion](./cooking-3tasks.jpg)
 
 ---
 
-![chopping onion and carrot]()
+![chopping onion and carrot](./tripple-onion-chop.jpg)
 
 ---
 
-![chopping onion and carrot with friend]()
-
----
-
-![chopping onion and carrot with 4 arms]()
+![chopping onion and carrot with friend](./parellel-onion-chop.jpg)
 
 ---
 
@@ -258,14 +278,6 @@ Parallelism is taking more than one **action** at a time.
 ### Recap: Concurrency vs Parallelism
 
 > "Concurrency is about **dealing with** lots of things at once. Parallelism is about **doing** lots of things at once." - Rob Pike
-
----
-
-![diagram of serial server]()
-
----
-
-![diagram of parallel server]()
 
 ---
 
@@ -343,7 +355,33 @@ yuri              8586   0.0  0.1 411317600  13088 s025  S+    5:37PM   0:00.05 
 
 ---
 
-![forking per request server diagram]()
+<style scoped>
+img {
+  width: 1100px;
+}
+</style>
+
+![diagram of serial server](./serial-server.svg)
+
+---
+
+<style scoped>
+img {
+  width: 1100px;
+}
+</style>
+
+![process per connection server](./process-per-connection-1.svg)
+
+---
+
+<style scoped>
+img {
+  width: 1100px;
+}
+</style>
+
+![process per connection server](./process-per-connection-2.svg)
 
 ---
 
@@ -425,7 +463,13 @@ img {
 
 ---
 
-![prefork server diagram]()
+<style scoped>
+img {
+  width: 1000px;
+}
+</style>
+
+![prefork server diagram](./preforking-server-diagram.svg)
 
 ---
 
@@ -491,7 +535,23 @@ img {
 
 ---
 
-![single process multi thread server]()
+<style scoped>
+img {
+  width: 1000px;
+}
+</style>
+
+![serial server](./serial-server.svg)
+
+---
+
+<style scoped>
+img {
+  width: 1000px;
+}
+</style>
+
+![single process multi thread server](./single-process-multithread-server.svg)
 
 ---
 
@@ -672,9 +732,17 @@ img {
 
 ---
 
-![thread pool diagram]()
+<style scoped>
+img {
+  width: 1000px;
+}
+</style>
+
+![thread pool diagram](./thread-pool-diagram.svg)
 
 ---
+
+TODO: untrue
 
 ```rb
 def start
@@ -692,11 +760,27 @@ end
 
 ---
 
-![preforking thread pool diagram]()
+### Server Model: Prefork + Threads
 
 ---
 
-### Server Model: Prefork + Threads
+<style scoped>
+img {
+  width: 1000px;
+}
+</style>
+
+![thread pool diagram](./thread-pool-diagram.svg)
+
+---
+
+<style scoped>
+img {
+  width: 1100px;
+}
+</style>
+
+![preforking thread pool diagram](./preforking-threadpool-diagram.svg)
 
 ---
 
@@ -748,9 +832,21 @@ end
 
 ---
 
+<style scoped>
+img {
+  width: 500px;
+}
+</style>
+
 ![diagram of fibers within a thread](./thread-containing-fiber.svg)
 
 ---
+
+<style scoped>
+img {
+  width: 500px;
+}
+</style>
 
 ![thread containing many fibers diagram](./thread-many-fibers.svg)
 
@@ -768,7 +864,7 @@ code to start a fiber
 
 ---
 
-drawing of young kids all being given a turn on the ipad
+![childern supervised play](./supervised-game.jpg)
 
 ---
 
@@ -806,7 +902,7 @@ img {
 
 ---
 
-drawing of millennials sharing a game console
+![sharing console](./sharing-couch.jpg)
 
 ---
 
@@ -818,11 +914,23 @@ what does that mean?
 
 ---
 
-![delegating to thread pool diagram]()
+<style scoped>
+img {
+  width: 1000px;
+}
+</style>
+
+![delegating to thread pool diagram](./thread-pool-diagram.svg)
 
 ---
 
-![fiber per connection diagram]()
+<style scoped>
+img {
+  width: 1000px;
+}
+</style>
+
+![fiber per connection diagram](./fiber-server-diagram.svg)
 
 ---
 
@@ -858,6 +966,12 @@ workers:
 ```
 
 ---
+
+<style scoped>
+img {
+  width: 1000px;
+}
+</style>
 
 ![image of 20 threads with 1 glv working on pdfs](./20-thread-pdf-gen.svg)
 
