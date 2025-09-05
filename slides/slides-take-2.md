@@ -219,9 +219,11 @@ img {
 
 ---
 
-TODO
+## Performance
 
-![chart serial blocking web server perf]()
+|                     | Serial Server | Preforking | Threadpool | Prefork + Threadpool | Prefork + Fiber |
+| ------------------- | ------------- | ---------- | ---------- | -------------------- | --------------- |
+| Requests per Second | 17.34         | ?          | ?          | ?                    | ?               |
 
 ---
 
@@ -493,7 +495,9 @@ end
 
 ## Impact
 
-Optimal Preforking Server RPS vs Process Per Request
+|                     | Serial Server | Preforking | Threadpool | Prefork + Threadpool | Prefork + Fiber |
+| ------------------- | ------------- | ---------- | ---------- | -------------------- | --------------- |
+| Requests per Second | 17.34         | 173.5      | ?          | ?                    | ?               |
 
 ---
 
@@ -742,17 +746,14 @@ img {
 
 ---
 
-TODO: untrue
-
 ```rb
 def start
-  THREAD_COUNT.times do
-    Thread.new do
-      loop do
-        connection = @server.accept
-        handler.handle(connection)
-        connection.close
-      end
+  loop do
+    connection = @server.accept
+
+    @thread_pool.add_task(connection) do |conn|
+      @handler.handle(conn)
+      connection.close
     end
   end
 end
@@ -953,7 +954,9 @@ img {
 
 ## Final Stats?
 
-![final server comparison]()
+|                     | Serial Server | Preforking | Threadpool | Prefork + Threadpool | Prefork + Fiber |
+| ------------------- | ------------- | ---------- | ---------- | -------------------- | --------------- |
+| Requests per Second | 17.3          | 300        | 173        | 880.5                |                 |
 
 ---
 

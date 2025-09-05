@@ -11,7 +11,7 @@ class PreforkBenchmark
   def initialize(server:, 
                  server_concurrency: 10,
                  requests_per_test: 1000,
-                 bench_concurrency_levels: [1, 2, 4, 8, 16, 32, 64, 128, 256])
+                 bench_concurrency_levels: [1, 2, 4])
     @server_concurrency = server_concurrency
     @requests_per_test = requests_per_test
     @bench_concurrency_levels = bench_concurrency_levels
@@ -154,7 +154,7 @@ if __FILE__ == $0
   # Allow customization via command line arguments
   server = ARGV[0]
   requests = ARGV[1] ? ARGV[1].to_i : 1000
-  bench_concurrency_levels = ARGV[2] ? ARGV[2].split(',').map(&:to_i) : [1, 2, 4, 8, 16, 32, 48, 64, 80, 96, 112]
+  bench_concurrency_levels = ARGV[2] ? ARGV[2].split(',').map(&:to_i) : [1, 2, 4]
   
   benchmark = PreforkBenchmark.new(
     server: server,

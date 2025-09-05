@@ -9,14 +9,13 @@ class Benchmark
   BENCHMARK_URL = "http://localhost:#{SERVER_PORT}/"
   
   def initialize(server:, 
-                 process_counts: [4, 5, 6, 7, 8, 9, 10, 11],
-                 thread_counts: [1],
+                 process_counts: [1],
+                 thread_counts: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
                  requests_per_test: 1000,
                  bench_concurrency: 8)
     @process_counts = process_counts
     @thread_counts = thread_counts
     @requests_per_test = requests_per_test
-    @bench_concurrency = bench_concurrency
     @server = server
     @results = {}
   end
@@ -30,7 +29,8 @@ class Benchmark
 
     @process_counts.each do |process_count|
       @thread_counts.each do |thread_count|
-        benchmark_configuration(process_count, thread_count, process_count * thread_count * 2)
+        bench_concurrency = process_count * thread_count * 10
+        benchmark_configuration(process_count, thread_count, bench_concurrency)
       end
     end
 
@@ -71,6 +71,7 @@ class Benchmark
           "-p", "3000:3000", 
           "-e", "WEB_CONCURRENCY=#{process_count}",
           "-e", "RAILS_THREADS=#{thread_count}",
+          "--ulimit", "nofile=5000:5000",
           "--rm", "ruby-server",
           "ruby", @server,
            out: "/dev/null", err: "/dev/null")
