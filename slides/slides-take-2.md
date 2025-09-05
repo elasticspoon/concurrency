@@ -667,16 +667,6 @@ puts "Parallel fibonacci took #{time} seconds"
 
 <style scoped>
 img {
-  width: 400px;
-}
-</style>
-
-![gvl scaring patrick](./gvl-spooky.jpg)
-
----
-
-<style scoped>
-img {
   width: 1000px;
 }
 </style>
