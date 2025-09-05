@@ -988,6 +988,10 @@ img {
 
 ---
 
+![falcon vs puma](./falcon-vs-puma.png)
+
+---
+
 ## Recap: Fibers
 
 - cooperative not preemptive
