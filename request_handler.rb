@@ -53,12 +53,12 @@ class RequestHandler
   end
 
   def default_response
-    # sleep 0.05
+    sleep 0.01
     <<~RESP
       HTTP/1.1 200 OK
       Content-Type: text/plain
 
-      Default response: #{fibonacci(40000)}
+      Default response: #{fibonacci(20_000)}
     RESP
   end
 

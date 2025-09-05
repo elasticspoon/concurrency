@@ -68,6 +68,14 @@ def fibonacci(count = 1_000_000)
   b
 end
 
+io_time = 0.01
+time = Benchmark.realtime do
+  sleep io_time 
+  fibonacci 20000
+end
+puts "default took #{time} seconds"
+puts "io was #{(io_time / time) * 100}"
+
 time = Benchmark.realtime do
   fibonacci 300_000
   fibonacci 300_000

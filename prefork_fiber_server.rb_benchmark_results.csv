@@ -1,2 +1,2 @@
 process_count,thread_count,requests_per_second,time_per_request_ms,transfer_rate_kbps,p50_latency_ms,p90_latency_ms,p99_latency_ms
-4,1,172.94,289.119,1422.19,284,292,305
+4,3,442.16,271.397,1831.24,214,421,537

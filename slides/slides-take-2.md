@@ -1062,6 +1062,10 @@ table {
 
 ---
 
+![io vs cpu](./io-vs-cpu.svg)
+
+---
+
 <style scoped>
 table {
   font-size: 26px;

@@ -10,7 +10,7 @@ class Benchmark
   
   def initialize(server:, 
                  process_counts: [4],
-                 thread_counts: [3],
+                 thread_counts: [4],
                  requests_per_test: 1000,
                  bench_concurrency: 8)
     @process_counts = process_counts
