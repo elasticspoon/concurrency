@@ -1,0 +1,20 @@
+{
+  "timestamp": "2025-09-04T20:47:39-04:00",
+  "parameters": {
+    "server_concurrency": 10,
+    "requests_per_test": 1000,
+    "bench_concurrency_levels": [
+      50
+    ]
+  },
+  "results": {
+    "50": {
+      "requests_per_second": 450.58,
+      "time_per_request_ms": 110.967,
+      "transfer_rate_kbps": 394.7,
+      "p50_latency_ms": 106,
+      "p90_latency_ms": 110,
+      "p99_latency_ms": 113
+    }
+  }
+}

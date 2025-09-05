@@ -4,6 +4,12 @@ FROM ruby:3.4.5
 # Set the working directory in the container
 WORKDIR /app
 
+# Copy Gemfile and Gemfile.lock first for better caching
+COPY Gemfile Gemfile.lock ./
+
+# Install dependencies
+RUN bundle install
+
 # Copy the current directory contents into the container at /app
 COPY . /app
 
@@ -11,4 +17,4 @@ COPY . /app
 EXPOSE 3000
 
 # Run the server when the container launches
-CMD ["ruby", "non_blocking_server.rb"]
+CMD ["bundle", "exec", "ruby", "async_fiber_server.rb"]

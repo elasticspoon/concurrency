@@ -221,9 +221,9 @@ img {
 
 ## Performance
 
-|                     | Serial Server | Preforking | Threadpool | Prefork + Threadpool | Prefork + Fiber |
-| ------------------- | ------------- | ---------- | ---------- | -------------------- | --------------- |
-| Requests per Second | 17.34         | ?          | ?          | ?                    | ?               |
+|                     | Serial Server | Preforking | Threadpool | Prefork + Threadpool | Fiber | Prefork + Fiber |
+| ------------------- | ------------- | ---------- | ---------- | -------------------- | ----- | --------------- |
+| Requests per Second | 17.3          | ?          | ?          | ?                    | ?     | ?               |
 
 ---
 
@@ -495,9 +495,9 @@ end
 
 ## Impact
 
-|                     | Serial Server | Preforking | Threadpool | Prefork + Threadpool | Prefork + Fiber |
-| ------------------- | ------------- | ---------- | ---------- | -------------------- | --------------- |
-| Requests per Second | 17.34         | 173.5      | ?          | ?                    | ?               |
+|                     | Serial Server | Preforking | Threadpool | Prefork + Threadpool | Fiber | Prefork + Fiber |
+| ------------------- | ------------- | ---------- | ---------- | -------------------- | ----- | --------------- |
+| Requests per Second | 17.3          | 448.81     | ?          | ?                    | ?     | ?               |
 
 ---
 
@@ -777,6 +777,14 @@ end
 
 ---
 
+## Impact
+
+|                     | Serial Server | Preforking | Threadpool | Prefork + Threadpool | Fiber | Prefork + Fiber |
+| ------------------- | ------------- | ---------- | ---------- | -------------------- | ----- | --------------- |
+| Requests per Second | 17.3          | 448.21     | 173.88     | ?                    | ?     | ?               |
+
+---
+
 ### Server Model: Prefork + Threads
 
 ---
@@ -821,7 +829,11 @@ end
 
 ---
 
-![prefork thread pool results]()
+## Impact
+
+|                     | Serial Server | Preforking | Threadpool | Prefork + Threadpool | Fiber | Prefork + Fiber |
+| ------------------- | ------------- | ---------- | ---------- | -------------------- | ----- | --------------- |
+| Requests per Second | 17.3          | 448.81     | 173.88     | 880.5                | ?     | ?               |
 
 ---
 
@@ -970,9 +982,9 @@ img {
 
 ## Final Stats?
 
-|                     | Serial Server | Preforking | Threadpool | Prefork + Threadpool | Prefork + Fiber |
-| ------------------- | ------------- | ---------- | ---------- | -------------------- | --------------- |
-| Requests per Second | 17.3          | 300        | 173        | 880.5                |                 |
+|                     | Serial Server | Preforking | Threadpool | Prefork + Threadpool | Fiber  | Prefork + Fiber |
+| ------------------- | ------------- | ---------- | ---------- | -------------------- | ------ | --------------- |
+| Requests per Second | 17.3          | 448.21     | 173.88     | 880.5                | 526.27 | 2074.8          |
 
 ---
 

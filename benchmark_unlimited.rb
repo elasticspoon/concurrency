@@ -154,7 +154,7 @@ if __FILE__ == $0
   # Allow customization via command line arguments
   server = ARGV[0]
   requests = ARGV[1] ? ARGV[1].to_i : 1000
-  bench_concurrency_levels = ARGV[2] ? ARGV[2].split(',').map(&:to_i) : [1, 2, 4]
+  bench_concurrency_levels = ARGV[2] ? ARGV[2].split(',').map(&:to_i) : [50]
   
   benchmark = PreforkBenchmark.new(
     server: server,

@@ -9,7 +9,7 @@ class Benchmark
   BENCHMARK_URL = "http://localhost:#{SERVER_PORT}/"
   
   def initialize(server:, 
-                 process_counts: (4..100).to_a,
+                 process_counts: (4..50).to_a,
                  thread_counts: [1],
                  requests_per_test: 1000,
                  bench_concurrency: 8)
@@ -29,7 +29,7 @@ class Benchmark
 
     @process_counts.each do |process_count|
       @thread_counts.each do |thread_count|
-        bench_concurrency = process_count * thread_count * 10
+        bench_concurrency = [process_count * thread_count * 10, 50].max
         benchmark_configuration(process_count, thread_count, bench_concurrency)
       end
     end
