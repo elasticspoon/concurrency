@@ -9,8 +9,8 @@ class Benchmark
   BENCHMARK_URL = "http://localhost:#{SERVER_PORT}/"
   
   def initialize(server:, 
-                 process_counts: (4..50).to_a,
-                 thread_counts: [1],
+                 process_counts: [4],
+                 thread_counts: [3],
                  requests_per_test: 1000,
                  bench_concurrency: 8)
     @process_counts = process_counts

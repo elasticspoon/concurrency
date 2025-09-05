@@ -219,6 +219,12 @@ img {
 
 ---
 
+<style scoped>
+table {
+  font-size: 26px;
+}
+</style>
+
 ## Performance
 
 |                     | Serial Server | Preforking | Threadpool | Prefork + Threadpool | Fiber | Prefork + Fiber |
@@ -483,7 +489,7 @@ def start
     fork do
       loop do
         connection = @server.accept
-        handler.handle(connection)
+        handle(connection)
         connection.close
       end
     end
@@ -492,6 +498,12 @@ end
 ```
 
 ---
+
+<style scoped>
+table {
+  font-size: 26px;
+}
+</style>
 
 ## Impact
 
@@ -545,7 +557,7 @@ img {
 }
 </style>
 
-![serial server](./serial-server.svg)
+![prefork diagram](./preforking-server-diagram.svg)
 
 ---
 
@@ -752,7 +764,7 @@ def start
     connection = @server.accept
 
     @thread_pool.add_task(connection) do |conn|
-      @handler.handle(conn)
+      handle(conn)
       connection.close
     end
   end
@@ -776,6 +788,12 @@ end
 ```
 
 ---
+
+<style scoped>
+table {
+  font-size: 26px;
+}
+</style>
 
 ## Impact
 
@@ -813,13 +831,12 @@ img {
 def start
   PROCESS_COUNT.times do
     fork do
-      THREAD_COUNT.times do
-        Thread.new do
-          loop do
-            connection = @server.accept
-            handler.handle(connection)
-            connection.close
-          end
+      loop do
+        connection = @server.accept
+
+        @thread_pool.add_task(connection) do |conn|
+          handle(conn)
+          connection.close
         end
       end
     end
@@ -828,6 +845,12 @@ end
 ```
 
 ---
+
+<style scoped>
+table {
+  font-size: 26px;
+}
+</style>
 
 ## Impact
 
@@ -851,9 +874,9 @@ end
 
 ## Threads Recap
 
-- Threads are light weight and can share memory
-- Ruby code (when using CRuby) runs concurrently with threads
-- IO / Kernel level code runs in parallel
+- Light Weight
+- CRuby code runs concurrently
+- IO code runs in parallel
 
 ---
 
@@ -897,10 +920,6 @@ end
 
 ---
 
-![childern supervised play](./supervised-game.jpg)
-
----
-
 <style scoped>
 img {
   width: 1000px;
@@ -935,7 +954,23 @@ img {
 
 ---
 
-![sharing console](./sharing-couch.jpg)
+<style scoped>
+img {
+  width: 1000px;
+}
+</style>
+
+![fiber gvl 1](./fiber-gvl-1.svg)
+
+---
+
+<style scoped>
+img {
+  width: 1000px;
+}
+</style>
+
+![fiber gvl 2](./fiber-gvl-2.svg)
 
 ---
 
@@ -946,6 +981,16 @@ Fiber.new do
   # do more stuff
 end
 ```
+
+---
+
+<style scoped>
+img {
+  width: 1000px;
+}
+</style>
+
+![fiber gvl 3](./fiber-gvl-3.svg)
 
 ---
 
@@ -973,12 +1018,39 @@ img {
 
 ---
 
+```rb
+fork do
+  Async do |task|
+    loop do
+      connection = @server.accept
+
+      task.async do
+        handle(connection)
+        connection.close
+      end
+    end
+  end
+end
+```
+
+---
+
+## Falcon
+
+---
+
 ## Drawbacks?
 
 - Bad actors
 - Incompatibility of some gems
 
 ---
+
+<style scoped>
+table {
+  font-size: 26px;
+}
+</style>
 
 ## Final Stats?
 
@@ -988,7 +1060,17 @@ img {
 
 ---
 
-![falcon vs puma](./falcon-vs-puma.png)
+<style scoped>
+table {
+  font-size: 26px;
+}
+</style>
+
+## Final Stats?
+
+|                     | Serial Server | Preforking | Threadpool | Prefork + Threadpool | Fiber  | Prefork + Fiber |
+| ------------------- | ------------- | ---------- | ---------- | -------------------- | ------ | --------------- |
+| Requests per Second | 17.3          | 448.21     | 173.88     | ???                  | 526.27 | ???             |
 
 ---
 
@@ -1022,15 +1104,15 @@ img {
 
 ---
 
-## Conclusion: Know Your Tools
+## Recap
 
-- **Process:** Great for safety and CPU-bound parallelism.
-- **Thread:** Great for I/O-bound work (database calls, APIs).
-- **Fiber:** Best for massive I/O concurrency.
+- Concurrency: dealing with lots of things at once
+- Parallelism: taking multiple actions at a time
+- Three Primitives: Process, Threads, Fibers
 
 ---
 
-## Meta Conclusion
+## Conclusion
 
 Dig deeper.
 
@@ -1039,27 +1121,3 @@ Dig deeper.
 ## Thank You
 
 Questions?
-
----
-
-# Outtakes?
-
-## OS level versus Application level
-
----
-
-<style scoped>
-img {
-  width: 600px;
-}
-</style>
-
-![Diagram of user level vs kernel level](./user-vs-kernel-diagram.png)
-
----
-
-![meme of user space hiding kernel space ugliness](./user-vs-kernel-meme.jpg)
-
----
-
-![tracing a file.write call from user space to kernel](./user-vs-kernel-file-write.png)
