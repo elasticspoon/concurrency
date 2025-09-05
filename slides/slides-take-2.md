@@ -761,6 +761,22 @@ end
 
 ---
 
+```rb
+class ThreadPool
+  def run
+    # ...
+    Thread.new do
+      until @queue.closed? && @queue.empty?
+        task, value = @queue.pop
+        task&.call(value)
+      end
+    end
+  end
+end
+```
+
+---
+
 ### Server Model: Prefork + Threads
 
 ---
