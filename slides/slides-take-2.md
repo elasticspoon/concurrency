@@ -275,11 +275,11 @@ Parallelism is taking more than one **action** at a time.
 
 ---
 
-![chopping onion and carrot with friend](./parellel-onion-chop.jpg)
+## Parallelism Requires Hardware
 
 ---
 
-## Parallelism Requires Hardware
+![chopping onion and carrot with friend](./parellel-onion-chop.jpg)
 
 ---
 
@@ -996,6 +996,8 @@ img {
 
 ## So What?
 
+Bad Actors can kill Performance
+
 ---
 
 <style scoped>
@@ -1085,10 +1087,11 @@ table {
 
 ---
 
-```yaml
+```diff
 workers:
   - queues: [critical]
-    threads: 20
+-   threads: 3
++   threads: 20
     processes: 1
 ```
 
@@ -1104,10 +1107,20 @@ img {
 
 ---
 
+```diff
+workers:
+  - queues: [critical]
+    threads: 3
+-   processes: 1
++   processes: 4
+```
+
+---
+
 ## Recap
 
 - Concurrency: dealing with lots of things at once
-- Parallelism: taking multiple actions at a time
+- Parallelism: taking multiple actions at once
 - Three Primitives: Process, Threads, Fibers
 
 ---
