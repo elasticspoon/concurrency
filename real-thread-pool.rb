@@ -30,6 +30,6 @@ end
 
 if __FILE__ == $0
   threads = ENV.fetch('RAILS_THREADS', 3).to_i
-  server = Server.new(threads:)
+  server = Server.new(threads: threads)
   server.start
 end

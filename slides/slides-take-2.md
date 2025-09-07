@@ -202,13 +202,6 @@ RESP
 
 ---
 
-```rb
-server = Server.new(port: 3000)
-server.start
-```
-
----
-
 <style scoped>
 img {
   width: 1100px;
@@ -259,15 +252,11 @@ Concurrency is **dealing** with more than one task at a time.
 
 ---
 
-## What is Parallelism?
+## Parallelism?
 
 ---
 
 Parallelism is taking more than one **action** at a time.
-
----
-
-![stove top with pasta and pan with saute and chopping onion](./cooking-3tasks.jpg)
 
 ---
 
@@ -499,6 +488,13 @@ end
 
 ---
 
+## Real World
+
+- Unicorn
+- Pitchfork
+
+---
+
 <style scoped>
 table {
   font-size: 26px;
@@ -510,13 +506,6 @@ table {
 |                     | Serial Server | Preforking | Threadpool | Prefork + Threadpool | Fiber | Prefork + Fiber |
 | ------------------- | ------------- | ---------- | ---------- | -------------------- | ----- | --------------- |
 | Requests per Second | 17.3          | 448.81     | ?          | ?                    | ?     | ?               |
-
----
-
-## Real World
-
-- Unicorn
-- Pitchfork
 
 ---
 
@@ -572,14 +561,6 @@ img {
 ---
 
 ```rb
-Thread.new do
-  # do_work
-end
-```
-
----
-
-```rb
 time = Benchmark.realtime do
   sleep 2
   sleep 2
@@ -587,6 +568,14 @@ time = Benchmark.realtime do
 end
 puts "Serial sleep took #{time} seconds"
 # => Serial sleep took 6.012791999964975 seconds
+```
+
+---
+
+```rb
+Thread.new do
+  # do_work
+end
 ```
 
 ---
@@ -763,22 +752,6 @@ end
 
 ---
 
-```rb
-class ThreadPool
-  def run
-    # ...
-    Thread.new do
-      until @queue.closed? && @queue.empty?
-        task, value = @queue.pop
-        task&.call(value)
-      end
-    end
-  end
-end
-```
-
----
-
 <style scoped>
 table {
   font-size: 26px;
@@ -817,25 +790,6 @@ img {
 
 ---
 
-```rb
-def start
-  PROCESS_COUNT.times do
-    fork do
-      loop do
-        connection = @server.accept
-
-        @thread_pool.add_task(connection) do |conn|
-          handle(conn)
-          connection.close
-        end
-      end
-    end
-  end
-end
-```
-
----
-
 <style scoped>
 table {
   font-size: 26px;
@@ -865,8 +819,8 @@ table {
 ## Threads Recap
 
 - Light Weight
-- CRuby code runs concurrently
-- IO code runs in parallel
+- IO runs in parallel
+- CRuby code runs in series
 
 ---
 
@@ -891,14 +845,6 @@ img {
 </style>
 
 ![thread containing many fibers diagram](./thread-many-fibers.svg)
-
----
-
-```rb
-Fiber.new do
-  # do_stuff
-end
-```
 
 ---
 
@@ -1011,7 +957,7 @@ img {
 ---
 
 ```rb
-fork do
+def start
   Async do |task|
     loop do
       connection = @server.accept
@@ -1027,14 +973,17 @@ end
 
 ---
 
-## Falcon
+<style scoped>
+img {
+  width: 1000px;
+}
+</style>
+
+![prefork fiber diagram](./prefork-fiber-server-diagram.svg)
 
 ---
 
-## Drawbacks?
-
-- Bad actors
-- Incompatibility of some gems
+## Falcon
 
 ---
 
@@ -1074,6 +1023,8 @@ table {
 
 - cooperative not preemptive
 - cheap AF
+- Bad actors
+- Incompatibility of some gems
 
 ---
 
@@ -1116,12 +1067,6 @@ workers:
 - Concurrency: dealing with lots of things at once
 - Parallelism: taking multiple actions at once
 - Three Primitives: Process, Threads, Fibers
-
----
-
-## Conclusion
-
-Dig deeper.
 
 ---
 
